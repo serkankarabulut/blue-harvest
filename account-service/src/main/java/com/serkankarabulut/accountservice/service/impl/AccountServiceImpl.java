@@ -16,6 +16,7 @@ import com.serkankarabulut.accountservice.repository.AccountRepository;
 import com.serkankarabulut.accountservice.service.AccountService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -33,6 +34,9 @@ public class AccountServiceImpl implements AccountService {
     private final ModelMapper modelMapper;
     private final KafkaTemplate<String, Object> kafkaTemplate;
     private final RestTemplate restTemplate;
+
+    @Value("${account-service.get-transaction-history-url}")
+    public String GET_TRANSACTION_HISTORY_URI;
 
     @Override
     public Long createAccount(CreateAccountRequest request) {
@@ -101,7 +105,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     private CustomerTransactionInfoDto getAccountTransactionDto(Long customerId){
-        String url = Constants.GET_TRANSACTION_HISTORY_URI + customerId;
+        String url = GET_TRANSACTION_HISTORY_URI + customerId;
         TransactionHistoryDto[] transactionHistoryDtos;
         CustomerTransactionInfoDto customerTransactionInfoDto = null;
         try {
