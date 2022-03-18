@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,6 +36,9 @@ public class AccountServiceImplTest {
     private ModelMapper modelMapper;
     private KafkaTemplate kafkaTemplate;
     private RestTemplate restTemplate;
+
+    @Value("${account-service.get-transaction-history-url}")
+    public String GET_TRANSACTION_HISTORY_URI;
 
     @BeforeEach
     public void setup() {
@@ -82,7 +86,7 @@ public class AccountServiceImplTest {
                 .surname("surname")
                 .build();
 
-        String url = Constants.GET_TRANSACTION_HISTORY_URI + 1L;
+        String url = GET_TRANSACTION_HISTORY_URI + 1L;
 
         Mockito.when(accountRepository.findById(1L)).thenReturn(customer);
         Mockito.when(modelMapper.toAccountInfoResponse(customer)).thenReturn(accountInfoResponseWithoutTransaction);
@@ -117,7 +121,7 @@ public class AccountServiceImplTest {
                 .transactionHistory(List.of(new TransactionHistoryDto(1L, transactionList)))
                 .build();
         TransactionHistoryDto transactionHistoryDto[] = {new TransactionHistoryDto(1L, transactionList)};
-        String url = Constants.GET_TRANSACTION_HISTORY_URI + 1L;
+        String url = GET_TRANSACTION_HISTORY_URI + 1L;
 
         Mockito.when(accountRepository.findById(1L)).thenReturn(customer);
         Mockito.when(modelMapper.toAccountInfoResponse(customer)).thenReturn(accountInfoResponseWithoutTransaction);
@@ -176,7 +180,7 @@ public class AccountServiceImplTest {
         for (int i = 0; i < customerList.size(); i++) {
             Mockito.when(modelMapper.toAccountInfoResponse(customerList.get(i))).thenReturn(accountInfoResponseList.get(i));
             Long customerId = customerList.get(i).getCustomerId();
-            String url = Constants.GET_TRANSACTION_HISTORY_URI + customerId;
+            String url = GET_TRANSACTION_HISTORY_URI + customerId;
             TransactionHistoryDto[] transactionHistoryDtoArray;
             if (customerId.equals(1L)) {
                 transactionHistoryDtoArray = new TransactionHistoryDto[]{new TransactionHistoryDto(1L, transactionListCustomer1)};
@@ -196,7 +200,7 @@ public class AccountServiceImplTest {
         Mockito.verify(accountRepository).findAll();
         for (int i = 0; i < customerList.size(); i++) {
             Long customerId = customerList.get(i).getCustomerId();
-            String url = Constants.GET_TRANSACTION_HISTORY_URI + customerId;
+            String url = GET_TRANSACTION_HISTORY_URI + customerId;
             Mockito.verify(restTemplate).getForObject(url, TransactionHistoryDto[].class);
         }
     }
