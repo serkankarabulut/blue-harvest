@@ -22,3 +22,5 @@ jobs:
         cacha: maven
     - name: Build with Maven account service
       run: mvn -B clean package --file account-service/pom.xml
+    - name: Build with Maven transaction service
+      run: mvn -B clean package --file transaction-service/pom.xml 
