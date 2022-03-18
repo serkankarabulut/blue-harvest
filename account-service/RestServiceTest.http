@@ -1,0 +1,26 @@
+POST http://localhost:8090/account/createAccount
+Content-Type: application/json
+
+{
+  "customerId": 1,
+  "initialCredit": 10
+}
+###
+POST http://localhost:8090/account/createCustomer
+Content-Type: application/json
+
+{
+  "name": "Janja",
+  "surname": "Garnbret"
+}
+###
+GET http://localhost:8090/account/
+Accept: application/json
+###
+GET http://localhost:8090/account/1
+Accept: application/json
+###
+GET http://localhost:8090/account/mock
+Accept: application/json
+
+

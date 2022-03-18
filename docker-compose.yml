@@ -1,0 +1,61 @@
+version: '3.7'
+services:
+  transaction-service:
+    container_name: transaction-service
+    build:
+      context: transaction-service
+      dockerfile: Dockerfile
+    image: transaction-service:latest
+    ports:
+      - "8091:8091"
+    networks:
+      - blue_harvest_network
+  account-service:
+    container_name: account-service
+    build:
+      context: account-service
+      dockerfile: Dockerfile
+    image: account-service:latest
+    ports:
+      - "8090:8090"
+    networks:
+      - blue_harvest_network
+  frontend:
+    container_name: frontend
+    image: frontend:latest
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - blue_harvest_network
+    stdin_open: true
+    tty: true
+  zookeeper:
+    container_name: zookeeper
+    image: bitnami/zookeeper:latest
+    ports:
+      - "2181:2181"
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+    networks:
+      - blue_harvest_network
+  kafka:
+    container_name: kafka
+    image: bitnami/kafka:latest
+    environment:
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://127.0.0.1:9092
+      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - ALLOW_PLAINTEXT_LISTENER=yes
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    networks:
+      - blue_harvest_network
+networks:
+  blue_harvest_network:
+    driver: bridge

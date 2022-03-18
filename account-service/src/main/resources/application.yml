@@ -1,0 +1,9 @@
+server:
+  port: 8090
+spring:
+  kafka:
+    producer:
+      bootstrap-servers: kafka:9092
+
+account-service:
+  get-transaction-history-url: http://transaction-service:8091/transaction/
